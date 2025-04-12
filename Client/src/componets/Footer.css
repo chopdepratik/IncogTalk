@@ -1,0 +1,28 @@
+.footer {
+    background-color: #1a1a1a;
+    padding: 1.5rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .glow-text {
+    font-size: 1rem;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .glow-text span {
+    color: #25D366;
+    font-weight: bold;
+  }
+  
+  @keyframes glow {
+    from {
+      text-shadow: 0 0 5px #25D366, 0 0 10px #25D366;
+    }
+    to {
+      text-shadow: 0 0 15px #25D366, 0 0 30px #25D366;
+    }
+  }
+  
