@@ -127,6 +127,7 @@ const joinRoom = (e) => {
         }));
       };
 
+    socket.on("same-user-exist", handleDublicateUser);
     socket.on("user-joined", handleUserJoined);
     socket.on("receive-message", handleReceiveMessage);
     socket.on("updated-users", handleUserLeft);
@@ -134,6 +135,7 @@ const joinRoom = (e) => {
     socket.on("update-likes", handleLikes);
 
     return () => {
+      socket.off("same-user-exist", handleDublicateUser)
       socket.off("user-joined", handleUserJoined);
       socket.off("receive-message", handleReceiveMessage);
       socket.off("updated-users", handleUserLeft);
