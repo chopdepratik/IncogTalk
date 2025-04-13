@@ -20,11 +20,16 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
   socket.on("join-room", ({ username, room }) => {
+    if (!roomUsers[room]) roomUsers[room] = [];
+    if(roomUsers[room].includes(username)){
+      socket.emit("same-user-exist",{user:username})
+      return;
+    }
     socket.join(room);
     socket.username = username;
     socket.room = room;
 
-    if (!roomUsers[room]) roomUsers[room] = [];
+     
     if (!roomUsers[room].includes(username)) {
       roomUsers[room].push(username);
     }
@@ -33,6 +38,7 @@ io.on("connection", (socket) => {
 
     io.to(room).emit("user-joined", `${username} joined the room`, roomUsers[room]);
   });
+
 
   socket.on("send-message", ({ room, username, message, replyTo }) => {
     const msgId = uuidv4();
