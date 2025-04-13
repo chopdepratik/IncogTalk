@@ -24,6 +24,7 @@ const BasicMultiUserChat = () => {
   const [menuVisibleForId, setMenuVisibleForId] = useState(null);
   const [likedMessages, setLikedMessages] = useState({});
   const [highlightedId , setHighlightedId] = useState(null)
+  const [userDublicate, setUserDublicate] = useState(false)
   const notificationSound = new Audio("/sentSound.mp3");
   const notificationSoundJoin = new Audio("/notify.mp3");
 
@@ -45,12 +46,13 @@ const handleNotifySound = () => {
 
    
 
-  const joinRoom = () => {
-    if (room && username) {
-      socket.emit("join-room", { username, room });
-      setJoined(true);
-    }
-  };
+const joinRoom = (e) => {
+  e.preventDefault();
+  if (room && username) {
+    setUserDublicate(false); // Clear error on new attempt
+    socket.emit("join-room", { username, room });
+  }
+};
 
   const sendMessage = () => {
     if (message.trim() !== "") {
@@ -75,7 +77,16 @@ const handleNotifySound = () => {
   }, [chatLog]);
 
   useEffect(() => {
+    const handleDublicateUser = ({user})=>{
+      if(username == user){
+        setUserDublicate(true)
+        setJoined(false)
+         
+      }
+    }
+    
     const handleUserJoined = (msg, users) => {
+      setJoined(true);
       setChatLog((prev) => [...prev, { username: "Server", message: msg }]);
       setUsersInRoom(users);
       handleNotifySound()
@@ -129,7 +140,7 @@ const handleNotifySound = () => {
       socket.off("typing-user", handleTyping);
       socket.off("update-likes", handleLikes);
     };
-  }, []);
+  }, [username]);
 
   return (
     <div  className="main-container" >
@@ -159,6 +170,9 @@ const handleNotifySound = () => {
               required
             />
             <button className="join-button" type="submit">Join</button>
+            {
+              userDublicate && (<p>Opps! Username exist in the meeting room: {room},change the name</p>)
+            }
           </form>
         </div>
       </div>
